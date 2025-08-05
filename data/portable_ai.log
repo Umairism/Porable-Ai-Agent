@@ -165,3 +165,19 @@ AttributeError: 'OptimizedConversationMemory' object has no attribute 'logger'
 2025-08-05 17:43:50,325 - memory.optimized_conversation_memory - ERROR - Error in batch processing: unsupported operand type(s) for +: 'NoneType' and 'int'
 2025-08-05 17:43:50,326 - memory.optimized_conversation_memory - INFO - Session ended: session_1754397787824_8880
 2025-08-05 17:43:50,358 - __main__ - ERROR - Error saving data: sys.meta_path is None, Python is likely shutting down
+2025-08-05 17:45:39,472 - __main__ - INFO - Initializing Optimized Portable AI Agent...
+2025-08-05 17:45:43,002 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: cpu
+2025-08-05 17:45:43,002 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-08-05 17:45:47,269 - __main__ - INFO - AI Engine initialized in 7.80s
+2025-08-05 17:45:47,274 - knowledge.optimized_knowledge_base - INFO - Loaded FAISS index with 0 items
+2025-08-05 17:45:47,274 - __main__ - INFO - Knowledge Base initialized in 0.00s
+2025-08-05 17:45:47,278 - memory.optimized_conversation_memory - INFO - Loaded 0 user profiles
+2025-08-05 17:45:47,278 - __main__ - INFO - Conversation Memory initialized in 0.00s
+2025-08-05 17:45:47,278 - __main__ - INFO - All components initialized successfully in 7.81s
+2025-08-05 17:45:53,898 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: cpu
+2025-08-05 17:45:53,898 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-08-05 17:45:58,136 - knowledge.optimized_knowledge_base - ERROR - Error in knowledge search: 
+2025-08-05 17:46:16,105 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: cpu
+2025-08-05 17:46:16,105 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-08-05 17:46:20,660 - knowledge.optimized_knowledge_base - ERROR - Error in knowledge search: 
+2025-08-05 17:46:20,663 - __main__ - ERROR - Error processing input: Asking to pad but the tokenizer does not have a padding token. Please select a token to use as `pad_token` `(tokenizer.pad_token = tokenizer.eos_token e.g.)` or add a new pad token via `tokenizer.add_special_tokens({'pad_token': '[PAD]'})`.
