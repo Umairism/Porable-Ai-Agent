@@ -17,7 +17,7 @@ from knowledge.optimized_knowledge_base import OptimizedKnowledgeBase
 from memory.optimized_conversation_memory import OptimizedConversationMemory
 
 # Import original interfaces (these should also be optimized in a real implementation)
-from interface.cli_interface import CLIInterface
+from interface.cli_interface import PortableAIInterface
 from interface.web_interface import WebInterface
 
 # Import utilities
@@ -630,8 +630,12 @@ def main():
         if args.mode == "interactive":
             ai_agent.interactive_mode()
         elif args.mode == "cli":
-            cli = CLIInterface(ai_agent)
-            cli.run()
+            cli = PortableAIInterface()
+            # Pass the optimized agent to the CLI interface
+            cli.ai_engine = ai_agent.ai_engine
+            cli.knowledge_base = ai_agent.knowledge_base
+            cli.memory = ai_agent.conversation_memory
+            cli.cmdloop()
         elif args.mode == "web":
             web = WebInterface(ai_agent)
             web.run()

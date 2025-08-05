@@ -65,12 +65,12 @@ class OptimizedKnowledgeBase:
             'index_size': 0
         }
         
-        # Load existing data
-        self.load_existing_data()
-        
         # Setup logging
         logging.basicConfig(level=logging.INFO)
         self.logger = logging.getLogger(__name__)
+        
+        # Load existing data
+        self.load_existing_data()
     
     def init_database(self):
         """Initialize optimized SQLite database"""
@@ -101,8 +101,29 @@ class OptimizedKnowledgeBase:
             # Create indexes for performance
             conn.execute("CREATE INDEX IF NOT EXISTS idx_content_hash ON knowledge_items(content_hash)")
             conn.execute("CREATE INDEX IF NOT EXISTS idx_category ON knowledge_items(category)")
-            conn.execute("CREATE INDEX IF NOT EXISTS idx_importance ON knowledge_items(importance_score DESC)")
-            conn.execute("CREATE INDEX IF NOT EXISTS idx_access_count ON knowledge_items(access_count DESC)")
+            
+            # Check if importance_score column exists before creating index
+            cursor = conn.execute("PRAGMA table_info(knowledge_items)")
+            columns = [column[1] for column in cursor.fetchall()]
+            
+            if 'importance_score' in columns:
+                conn.execute("CREATE INDEX IF NOT EXISTS idx_importance ON knowledge_items(importance_score DESC)")
+                conn.execute("CREATE INDEX IF NOT EXISTS idx_access_count ON knowledge_items(access_count DESC)")
+            else:
+                # Add missing columns for backward compatibility
+                try:
+                    conn.execute("ALTER TABLE knowledge_items ADD COLUMN importance_score REAL DEFAULT 1.0")
+                    conn.execute("ALTER TABLE knowledge_items ADD COLUMN access_count INTEGER DEFAULT 0")
+                    conn.execute("ALTER TABLE knowledge_items ADD COLUMN last_accessed TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+                    conn.execute("ALTER TABLE knowledge_items ADD COLUMN metadata TEXT DEFAULT '{}'")
+                    
+                    # Now create the indexes
+                    conn.execute("CREATE INDEX IF NOT EXISTS idx_importance ON knowledge_items(importance_score DESC)")
+                    conn.execute("CREATE INDEX IF NOT EXISTS idx_access_count ON knowledge_items(access_count DESC)")
+                    print("✅ Database schema updated for optimization")
+                except sqlite3.OperationalError as e:
+                    print(f"⚠️  Database schema update warning: {e}")
+            
             
             # Knowledge relationships table
             conn.execute("""

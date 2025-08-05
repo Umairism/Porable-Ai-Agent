@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portable AI Agent</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.1em;
+        }
+
+        .container {
+            flex: 1;
+            display: flex;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        .chat-container {
+            flex: 2;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px 20px;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            max-height: 500px;
+            background-color: #f8f9fa;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            padding: 12px 15px;
+            border-radius: 10px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+
+        .user-message {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            margin-left: auto;
+            text-align: right;
+        }
+
+        .ai-message {
+            background: white;
+            border: 1px solid #e9ecef;
+            color: #333;
+        }
+
+        .chat-input-container {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .chat-input-form {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 25px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .chat-input:focus {
+            border-color: #667eea;
+        }
+
+        .send-button {
+            padding: 12px 24px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+
+        .send-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .send-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .sidebar {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .panel {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .panel-header {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px 20px;
+            font-weight: bold;
+        }
+
+        .panel-content {
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            border-color: #667eea;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .action-button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+
+        .action-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .status-message {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .loading {
+            opacity: 0.6;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .message {
+                max-width: 95%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🤖 Portable AI Agent</h1>
+        <p>Offline • Self-Learning • Private • Your Personal AI Assistant</p>
+    </div>
+
+    <div class="container">
+        <div class="chat-container">
+            <div class="chat-header">
+                💬 Chat with your AI Assistant
+            </div>
+            <div class="chat-messages" id="chatMessages">
+                <div class="message ai-message">
+                    <strong>AI Assistant:</strong> Hello! I'm your personal AI assistant. I run completely offline and learn from our conversations. How can I help you today?
+                </div>
+            </div>
+            <div class="chat-input-container">
+                <form class="chat-input-form" id="chatForm">
+                    <input type="text" id="chatInput" class="chat-input" placeholder="Type your message here..." required>
+                    <button type="submit" id="sendButton" class="send-button">Send</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="panel">
+                <div class="panel-header">
+                    🧠 Teach Your AI
+                </div>
+                <div class="panel-content">
+                    <form id="learnForm">
+                        <div class="form-group">
+                            <label for="learnInput">Input/Question:</label>
+                            <input type="text" id="learnInput" placeholder="What should I respond to?">
+                        </div>
+                        <div class="form-group">
+                            <label for="learnOutput">Expected Response:</label>
+                            <textarea id="learnOutput" placeholder="How should I respond?"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="learnScore">Importance (0.1-1.0):</label>
+                            <input type="number" id="learnScore" min="0.1" max="1.0" step="0.1" value="1.0">
+                        </div>
+                        <button type="submit" class="action-button">Teach AI</button>
+                    </form>
+                    <div id="learnStatus"></div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    📚 Add Knowledge
+                </div>
+                <div class="panel-content">
+                    <form id="knowledgeForm">
+                        <div class="form-group">
+                            <label for="knowledgeTitle">Title:</label>
+                            <input type="text" id="knowledgeTitle" placeholder="Knowledge title">
+                        </div>
+                        <div class="form-group">
+                            <label for="knowledgeContent">Content:</label>
+                            <textarea id="knowledgeContent" placeholder="Enter knowledge content"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="knowledgeCategory">Category:</label>
+                            <select id="knowledgeCategory">
+                                <option value="general">General</option>
+                                <option value="technical">Technical</option>
+                                <option value="personal">Personal</option>
+                                <option value="work">Work</option>
+                                <option value="hobby">Hobby</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="action-button">Add Knowledge</button>
+                    </form>
+                    <div id="knowledgeStatus"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Chat functionality
+        const chatForm = document.getElementById('chatForm');
+        const chatInput = document.getElementById('chatInput');
+        const chatMessages = document.getElementById('chatMessages');
+        const sendButton = document.getElementById('sendButton');
+
+        chatForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const message = chatInput.value.trim();
+            if (!message) return;
+
+            // Add user message to chat
+            addMessage('user', message);
+            chatInput.value = '';
+            sendButton.disabled = true;
+            sendButton.textContent = 'Thinking...';
+
+            try {
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ message: message })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    addMessage('ai', data.response);
+                    if (data.knowledge_info) {
+                        addMessage('ai', `💡 Related knowledge: ${data.knowledge_info.title}`, 'knowledge');
+                    }
+                } else {
+                    addMessage('ai', `Error: ${data.error}`, 'error');
+                }
+            } catch (error) {
+                addMessage('ai', 'Sorry, I encountered an error. Please try again.', 'error');
+                console.error('Chat error:', error);
+            }
+
+            sendButton.disabled = false;
+            sendButton.textContent = 'Send';
+        });
+
+        function addMessage(sender, content, type = 'normal') {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}-message`;
+            
+            if (type === 'error') {
+                messageDiv.style.borderLeft = '4px solid #dc3545';
+            } else if (type === 'knowledge') {
+                messageDiv.style.borderLeft = '4px solid #28a745';
+            }
+            
+            if (sender === 'user') {
+                messageDiv.innerHTML = `<strong>You:</strong> ${content}`;
+            } else {
+                messageDiv.innerHTML = `<strong>AI Assistant:</strong> ${content}`;
+            }
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Learning functionality
+        const learnForm = document.getElementById('learnForm');
+        const learnStatus = document.getElementById('learnStatus');
+
+        learnForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const input = document.getElementById('learnInput').value.trim();
+            const output = document.getElementById('learnOutput').value.trim();
+            const score = parseFloat(document.getElementById('learnScore').value);
+
+            console.log('Teaching form submitted:', { input, output, score });
+
+            if (!input || !output) {
+                showStatus(learnStatus, 'Both input and output are required', 'error');
+                return;
+            }
+
+            // Show loading state
+            showStatus(learnStatus, 'Teaching AI...', 'info');
+
+            try {
+                const response = await fetch('/learn', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ input, output, score })
+                });
+
+                const data = await response.json();
+                console.log('Learn response:', data);
+                
+                if (response.ok) {
+                    showStatus(learnStatus, 'AI learned successfully! ✅', 'success');
+                    learnForm.reset();
+                    document.getElementById('learnScore').value = '1.0';
+                } else {
+                    showStatus(learnStatus, `Error: ${data.error}`, 'error');
+                }
+            } catch (error) {
+                showStatus(learnStatus, 'Failed to teach AI', 'error');
+                console.error('Learn error:', error);
+            }
+        });
+
+        // Knowledge functionality
+        const knowledgeForm = document.getElementById('knowledgeForm');
+        const knowledgeStatus = document.getElementById('knowledgeStatus');
+
+        knowledgeForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const title = document.getElementById('knowledgeTitle').value.trim();
+            const content = document.getElementById('knowledgeContent').value.trim();
+            const category = document.getElementById('knowledgeCategory').value;
+
+            console.log('Knowledge form submitted:', { title, content, category });
+
+            if (!content) {
+                showStatus(knowledgeStatus, 'Content is required', 'error');
+                return;
+            }
+
+            // Show loading state
+            showStatus(knowledgeStatus, 'Adding knowledge...', 'info');
+
+            try {
+                const response = await fetch('/knowledge', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ title, content, category })
+                });
+
+                const data = await response.json();
+                console.log('Knowledge response:', data);
+                
+                if (response.ok) {
+                    showStatus(knowledgeStatus, 'Knowledge added successfully! ✅', 'success');
+                    knowledgeForm.reset();
+                } else {
+                    showStatus(knowledgeStatus, `Error: ${data.error}`, 'error');
+                }
+            } catch (error) {
+                showStatus(knowledgeStatus, 'Failed to add knowledge', 'error');
+                console.error('Knowledge error:', error);
+            }
+        });
+
+        function showStatus(element, message, type) {
+            element.innerHTML = `<div class="status-message status-${type}">${message}</div>`;
+            setTimeout(() => {
+                element.innerHTML = '';
+            }, 5000); // Increased timeout to 5 seconds so users can see the message
+        }
+
+        // Focus on chat input when page loads
+        chatInput.focus();
+    </script>
+</body>
+</html>

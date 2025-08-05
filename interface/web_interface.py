@@ -32,6 +32,9 @@ class WebInterface:
         self.memory = None
         self.sessions = {}  # Track user sessions
         
+        # Create HTML template
+        self.create_html_template()
+        
         self.initialize_components()
         self.setup_routes()
         
@@ -39,6 +42,15 @@ class WebInterface:
         self.auto_save_active = True
         self.start_auto_save()
     
+    def create_html_template(self):
+        """Create the HTML template"""
+        template_dir = os.path.join(os.path.dirname(__file__), 'templates')
+        os.makedirs(template_dir, exist_ok=True)
+        
+        # The HTML template is already created as a separate file
+        # This method ensures the templates directory exists
+        pass
+
     def initialize_components(self):
         """Initialize AI components"""
         print("Initializing Portable AI Agent for web interface...")
@@ -91,6 +103,11 @@ class WebInterface:
         def index():
             """Main page"""
             return render_template('index.html')
+        
+        @self.app.route('/test')
+        def test():
+            """Test page"""
+            return render_template('test.html')
         
         @self.app.route('/chat', methods=['POST'])
         def chat():
@@ -147,8 +164,14 @@ class WebInterface:
                 })
                 
             except Exception as e:
+                import traceback
+                error_details = traceback.format_exc()
                 print(f"Error in chat: {e}")
-                return jsonify({'error': 'Internal server error'}), 500
+                print(f"Full traceback: {error_details}")
+                return jsonify({
+                    'error': 'Internal server error', 
+                    'details': str(e) if self.debug else 'Check server logs for details'
+                }), 500
         
         @self.app.route('/learn', methods=['POST'])
         def learn():

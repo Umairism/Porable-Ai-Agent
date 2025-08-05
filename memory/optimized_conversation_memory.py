@@ -72,12 +72,12 @@ class OptimizedConversationMemory:
         # Pattern learning
         self.pattern_learner = ConversationPatternLearner()
         
-        # Load existing data
-        self.load_user_profiles()
-        
         # Setup logging
         logging.basicConfig(level=logging.INFO)
         self.logger = logging.getLogger(__name__)
+        
+        # Load existing data
+        self.load_user_profiles()
     
     def init_database(self):
         """Initialize optimized SQLite database"""

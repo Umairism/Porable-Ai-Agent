@@ -1,4 +1,17 @@
 {
+  "model_path": "models/",
+  "knowledge_db_path": "knowledge/knowledge.db",
+  "conversation_db_path": "memory/conversations.db",
+  "embedding_dim": 384,
+  "knowledge_cache_size": 10000,
+  "memory_cache_size": 5000,
+  "memory_batch_size": 25,
+  "knowledge_search_limit": 5,
+  "context_history_limit": 10,
+  "logging": {
+    "level": "INFO",
+    "file": "logs/portable_ai.log"
+  },
   "ai_engine": {
     "vocab_size": 10000,
     "model_dim": 256,
@@ -20,6 +33,17 @@
     "cleanup_days": 90,
     "auto_summary": true
   },
+  "web_interface": {
+    "host": "127.0.0.1",
+    "port": 5000,
+    "debug": false
+  },
+  "performance": {
+    "max_memory_usage": 1024,
+    "cpu_cores": -1,
+    "batch_size": 32,
+    "enable_gpu": false
+  },
   "interface": {
     "web_host": "127.0.0.1",
     "web_port": 5000,
@@ -30,11 +54,5 @@
     "encrypt_storage": false,
     "anonymize_logs": true,
     "data_retention_days": 365
-  },
-  "performance": {
-    "max_memory_usage": 1024,
-    "cpu_cores": -1,
-    "batch_size": 32,
-    "enable_gpu": false
   }
 }
