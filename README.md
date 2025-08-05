@@ -51,7 +51,7 @@ A **self-contained, offline-capable AI agent** with self-learning capabilities d
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/portable-ai-agent.git
+   git clone https://github.com/Umairism/portable-ai-agent.git
    cd portable-ai-agent
    ```
 
@@ -244,9 +244,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 Support
 
 - 📚 [Documentation](docs/)
-- 🐛 [Issues](https://github.com/yourusername/portable-ai-agent/issues)
-- 💬 [Discussions](https://github.com/yourusername/portable-ai-agent/discussions)
-- 📧 [Email Support](mailto:support@yourproject.com)
+- 🐛 [Issues](https://github.com/Umairism/portable-ai-agent/issues)
+- 💬 [Discussions](https://github.com/Umairism/portable-ai-agent/discussions)
+- 📧 [Email Support](mailto:malikumairhakim@outlook.com)
 
 ---
 

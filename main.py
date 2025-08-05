@@ -40,7 +40,7 @@ def check_dependencies():
     """Check if required dependencies are available"""
     required_packages = [
         'torch', 'transformers', 'sentence_transformers', 
-        'numpy', 'scipy', 'scikit-learn', 'faiss-cpu', 
+        'numpy', 'scipy', 'sklearn', 'faiss', 
         'nltk', 'flask', 'sqlite3'
     ]
     

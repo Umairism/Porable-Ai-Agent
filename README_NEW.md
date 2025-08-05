@@ -244,9 +244,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 Support
 
 - 📚 [Documentation](docs/)
-- 🐛 [Issues](https://github.com/yourusername/portable-ai-agent/issues)
-- 💬 [Discussions](https://github.com/yourusername/portable-ai-agent/discussions)
-- 📧 [Email Support](mailto:support@yourproject.com)
+- 🐛 [Issues](https://github.com/Umairism/portable-ai-agent/issues)
+- 💬 [Discussions](https://github.com/Umairism/portable-ai-agent/discussions)
+- 📧 [Email Support](mailto:malikumairHakeem@outlook.com)
 
 ---
 
