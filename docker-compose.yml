@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  portable-ai-agent:
+    build: .
+    container_name: portable-ai-agent
+    ports:
+      - "5000:5000"
+    volumes:
+      # Persist AI data
+      - ./data:/app/data
+      - ./models:/app/models
+      - ./knowledge:/app/knowledge
+      - ./memory:/app/memory
+      - ./logs:/app/logs
+    environment:
+      - PYTHONPATH=/app
+      - FLASK_ENV=production
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Development service with hot reload
+  portable-ai-agent-dev:
+    build: .
+    container_name: portable-ai-agent-dev
+    ports:
+      - "5001:5000"
+    volumes:
+      - .:/app
+    environment:
+      - PYTHONPATH=/app
+      - FLASK_ENV=development
+      - FLASK_DEBUG=1
+    command: python main.py --web --host 0.0.0.0 --debug
+    profiles:
+      - dev

@@ -1,0 +1,29 @@
+[
+  {
+    "timestamp": "2025-08-05T17:14:18.813244",
+    "input": "Hi",
+    "expected": "Hi... How you are you doing user.",
+    "loss": 8.846673011779785,
+    "learning_rate": 0.000101,
+    "context": "general",
+    "feedback_score": 1.0
+  },
+  {
+    "timestamp": "2025-08-05T17:30:03.216512",
+    "input": "hi",
+    "expected": "Hi... How may i help you today",
+    "loss": 7.103307247161865,
+    "learning_rate": 0.000101,
+    "context": "general",
+    "feedback_score": 1.0
+  },
+  {
+    "timestamp": "2025-08-05T17:31:11.983830",
+    "input": "What is your name?",
+    "expected": "I am your personal AI assistant!",
+    "loss": 5.601412296295166,
+    "learning_rate": 0.00010201000000000001,
+    "context": "general",
+    "feedback_score": 1.0
+  }
+]

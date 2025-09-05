@@ -1,0 +1,58 @@
+{
+  "model_path": "models/",
+  "knowledge_db_path": "knowledge/knowledge.db",
+  "conversation_db_path": "memory/conversations.db",
+  "embedding_dim": 384,
+  "knowledge_cache_size": 10000,
+  "memory_cache_size": 5000,
+  "memory_batch_size": 25,
+  "knowledge_search_limit": 5,
+  "context_history_limit": 10,
+  "logging": {
+    "level": "INFO",
+    "file": "logs/portable_ai.log"
+  },
+  "ai_engine": {
+    "vocab_size": 10000,
+    "model_dim": 256,
+    "num_heads": 8,
+    "num_layers": 4,
+    "max_seq_len": 512,
+    "learning_rate": 0.0001,
+    "adaptation_factor": 0.01
+  },
+  "knowledge_base": {
+    "embedding_model": "all-MiniLM-L6-v2",
+    "cache_size": 1000,
+    "max_search_results": 10,
+    "similarity_threshold": 0.1
+  },
+  "memory": {
+    "max_context_length": 10000,
+    "context_window": 50,
+    "cleanup_days": 90,
+    "auto_summary": true
+  },
+  "web_interface": {
+    "host": "127.0.0.1",
+    "port": 5000,
+    "debug": false
+  },
+  "performance": {
+    "max_memory_usage": 1024,
+    "cpu_cores": -1,
+    "batch_size": 32,
+    "enable_gpu": false
+  },
+  "interface": {
+    "web_host": "127.0.0.1",
+    "web_port": 5000,
+    "auto_save_interval": 300,
+    "max_message_length": 5000
+  },
+  "privacy": {
+    "encrypt_storage": false,
+    "anonymize_logs": true,
+    "data_retention_days": 365
+  }
+}

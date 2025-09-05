@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Form Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .form-group { margin: 10px 0; }
+        .form-group label { display: block; margin-bottom: 5px; }
+        .form-group input, .form-group textarea, .form-group select { width: 300px; padding: 5px; }
+        .button { padding: 10px 20px; background: #007bff; color: white; border: none; cursor: pointer; }
+        .status { margin: 10px 0; padding: 10px; border-radius: 5px; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+    </style>
+</head>
+<body>
+    <h1>AI Agent Form Test</h1>
+    
+    <h2>Test Chat</h2>
+    <div>
+        <input type="text" id="chatInput" placeholder="Type a message" style="width: 300px;">
+        <button onclick="testChat()" class="button">Send Chat</button>
+    </div>
+    <div id="chatStatus" class="status"></div>
+    
+    <h2>Test Teaching</h2>
+    <form onsubmit="testTeach(event)">
+        <div class="form-group">
+            <label>Input/Question:</label>
+            <input type="text" id="teachInput" placeholder="What should I respond to?" required>
+        </div>
+        <div class="form-group">
+            <label>Expected Response:</label>
+            <textarea id="teachOutput" placeholder="How should I respond?" required></textarea>
+        </div>
+        <div class="form-group">
+            <label>Score (0.1-1.0):</label>
+            <input type="number" id="teachScore" min="0.1" max="1.0" step="0.1" value="1.0">
+        </div>
+        <button type="submit" class="button">Teach AI</button>
+    </form>
+    <div id="teachStatus" class="status"></div>
+    
+    <h2>Test Knowledge</h2>
+    <form onsubmit="testKnowledge(event)">
+        <div class="form-group">
+            <label>Title:</label>
+            <input type="text" id="knowledgeTitle" placeholder="Knowledge title">
+        </div>
+        <div class="form-group">
+            <label>Content:</label>
+            <textarea id="knowledgeContent" placeholder="Enter knowledge content" required></textarea>
+        </div>
+        <div class="form-group">
+            <label>Category:</label>
+            <select id="knowledgeCategory">
+                <option value="general">General</option>
+                <option value="technical">Technical</option>
+                <option value="personal">Personal</option>
+            </select>
+        </div>
+        <button type="submit" class="button">Add Knowledge</button>
+    </form>
+    <div id="knowledgeStatus" class="status"></div>
+
+    <script>
+        function showStatus(elementId, message, type) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = message;
+            element.className = `status ${type}`;
+            setTimeout(() => {
+                element.innerHTML = '';
+                element.className = 'status';
+            }, 5000);
+        }
+
+        async function testChat() {
+            const input = document.getElementById('chatInput').value.trim();
+            if (!input) return;
+            
+            showStatus('chatStatus', 'Sending message...', 'info');
+            
+            try {
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: input })
+                });
+                
+                const data = await response.json();
+                if (response.ok) {
+                    showStatus('chatStatus', `AI Response: ${data.response}`, 'success');
+                } else {
+                    showStatus('chatStatus', `Error: ${data.error}`, 'error');
+                }
+            } catch (error) {
+                showStatus('chatStatus', `Failed: ${error.message}`, 'error');
+            }
+        }
+
+        async function testTeach(event) {
+            event.preventDefault();
+            
+            const input = document.getElementById('teachInput').value.trim();
+            const output = document.getElementById('teachOutput').value.trim();
+            const score = parseFloat(document.getElementById('teachScore').value);
+            
+            if (!input || !output) {
+                showStatus('teachStatus', 'Both input and output required', 'error');
+                return;
+            }
+            
+            showStatus('teachStatus', 'Teaching AI...', 'info');
+            
+            try {
+                const response = await fetch('/learn', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ input, output, score })
+                });
+                
+                const data = await response.json();
+                if (response.ok) {
+                    showStatus('teachStatus', `Success! Knowledge ID: ${data.knowledge_id}`, 'success');
+                    document.getElementById('teachInput').value = '';
+                    document.getElementById('teachOutput').value = '';
+                } else {
+                    showStatus('teachStatus', `Error: ${data.error}`, 'error');
+                }
+            } catch (error) {
+                showStatus('teachStatus', `Failed: ${error.message}`, 'error');
+            }
+        }
+
+        async function testKnowledge(event) {
+            event.preventDefault();
+            
+            const title = document.getElementById('knowledgeTitle').value.trim();
+            const content = document.getElementById('knowledgeContent').value.trim();
+            const category = document.getElementById('knowledgeCategory').value;
+            
+            if (!content) {
+                showStatus('knowledgeStatus', 'Content is required', 'error');
+                return;
+            }
+            
+            showStatus('knowledgeStatus', 'Adding knowledge...', 'info');
+            
+            try {
+                const response = await fetch('/knowledge', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title, content, category })
+                });
+                
+                const data = await response.json();
+                if (response.ok) {
+                    showStatus('knowledgeStatus', `Success! Knowledge ID: ${data.knowledge_id}`, 'success');
+                    document.getElementById('knowledgeTitle').value = '';
+                    document.getElementById('knowledgeContent').value = '';
+                } else {
+                    showStatus('knowledgeStatus', `Error: ${data.error}`, 'error');
+                }
+            } catch (error) {
+                showStatus('knowledgeStatus', `Failed: ${error.message}`, 'error');
+            }
+        }
+    </script>
+</body>
+</html>
