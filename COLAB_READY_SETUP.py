@@ -1,5 +1,5 @@
-# 🚀 One-Click Portable AI Agent Setup for Google Colab
-# Copy this entire cell content into a Google Colab cell and run it!
+# 🚀 GOOGLE COLAB - PORTABLE AI AGENT SETUP
+# Copy this ENTIRE cell content and paste it into a Google Colab cell, then run it!
 
 print("🤖 Setting up your Portable AI Agent...")
 print("="*50)
@@ -9,6 +9,7 @@ import os, sys, subprocess
 if not os.path.exists('/content/Porable-Ai-Agent'):
     print("📥 Cloning repository...")
     os.system('git clone https://github.com/umairism/Porable-Ai-Agent.git /content/Porable-Ai-Agent')
+
 os.chdir('/content/Porable-Ai-Agent')
 sys.path.insert(0, '/content/Porable-Ai-Agent')
 
@@ -19,8 +20,11 @@ os.system('pip install -q torch transformers sentence-transformers faiss-cpu fla
 # Download NLTK data
 print("📚 Setting up NLP data...")
 import nltk
-nltk.download('punkt', quiet=True)
-nltk.download('stopwords', quiet=True)
+try:
+    nltk.download('punkt', quiet=True)
+    nltk.download('stopwords', quiet=True)
+except:
+    print("NLTK data download skipped")
 
 # Initialize AI
 print("🧠 Initializing AI...")
@@ -66,18 +70,46 @@ print("\n🎉 Ready! Your AI Agent is initialized!")
 print("💬 Start chatting below:")
 print("="*50)
 
-# Simple chat loop
-while True:
-    try:
-        user_input = input("\n👤 You: ")
-        if user_input.lower() in ['quit', 'exit', 'bye']:
-            print("🤖 AI: Thanks for chatting! I learned a lot!")
+# Interactive chat function for Colab
+def start_chat():
+    """Start an interactive chat session"""
+    print("\n🗣️ Chat Mode Active!")
+    print("Type 'quit', 'exit', or 'bye' to end the chat")
+    print("-" * 40)
+    
+    while True:
+        try:
+            user_input = input("\n👤 You: ")
+            if user_input.lower().strip() in ['quit', 'exit', 'bye', 'q']:
+                print("🤖 AI: Thanks for chatting! I learned a lot!")
+                break
+            if user_input.strip():
+                response = ai_engine.chat(user_input)
+                print(f"🤖 AI: {response}")
+        except KeyboardInterrupt:
+            print("\n🤖 AI: Chat ended. Thanks for the learning session!")
             break
-        if user_input.strip():
-            response = ai_engine.chat(user_input)
-            print(f"🤖 AI: {response}")
-    except KeyboardInterrupt:
-        print("\n🤖 AI: Chat ended. Thanks for the learning session!")
-        break
-    except:
-        continue
+        except Exception as e:
+            print(f"Error: {e}")
+            continue
+
+# Show memory function
+def show_memory():
+    """Display chat history"""
+    if hasattr(ai_engine, 'memory') and ai_engine.memory:
+        print("\n📝 Chat Memory:")
+        print("-" * 30)
+        for i, (msg, resp) in enumerate(ai_engine.memory[-5:], 1):  # Show last 5
+            print(f"{i}. You: {msg}")
+            print(f"   AI: {resp}\n")
+    else:
+        print("No chat history yet.")
+
+print("\n🎮 Available Commands:")
+print("• start_chat() - Begin interactive chat")
+print("• show_memory() - View chat history")
+print("• ai_engine.chat('your message') - Single chat message")
+
+# Auto-start chat
+print("\n🚀 Starting chat automatically...")
+start_chat()
