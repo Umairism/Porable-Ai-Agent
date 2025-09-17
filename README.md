@@ -80,6 +80,21 @@ A **self-contained, offline-capable AI agent** with self-learning capabilities d
    python main.py --web
    ```
 
+### 🌐 **Run on Google Colab (No Installation Required!)**
+
+Want to try the AI Agent without any local setup? Run it directly on Google Colab:
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/umairism/Porable-Ai-Agent/blob/main/Google_Colab_Portable_AI_Agent.ipynb)
+
+**Features on Colab:**
+- 🚀 **Free GPU acceleration**
+- 🌐 **Web interface with public URL** 
+- 🔧 **Zero setup required**
+- 💾 **Session-based learning**
+- 📱 **Mobile-friendly interface**
+
+See [COLAB_README.md](COLAB_README.md) for detailed Colab instructions.
+
 ## 💻 Usage
 
 ### Command Line Interface
