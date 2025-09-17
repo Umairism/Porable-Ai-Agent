@@ -114,6 +114,11 @@ nltk.download('wordnet')
    - Use the CLI chat interface as backup
    - Check if the server is still running
 
+5. **ngrok authentication failed (ERR_NGROK_4018)**:
+   - Get free auth token from [ngrok.com](https://ngrok.com)
+   - Add `NGROK_AUTH_TOKEN` to Colab secrets (🔑 tab)
+   - See [NGROK_SETUP.md](NGROK_SETUP.md) for detailed instructions
+
 5. **Runtime disconnected**:
    - Colab sessions timeout after ~12 hours
    - Simply restart and run the setup again

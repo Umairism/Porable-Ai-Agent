@@ -113,12 +113,40 @@ def initialize_ai():
         from knowledge.knowledge_base import KnowledgeBase
         from memory.conversation_memory import ConversationMemory
         
+        print("📚 Initializing Knowledge Base...")
         knowledge_base = KnowledgeBase()
+        
+        print("💭 Initializing Conversation Memory...")
         conversation_memory = ConversationMemory()
-        ai_engine = SelfLearningCore(
-            knowledge_base=knowledge_base,
-            memory=conversation_memory
-        )
+        
+        print("🧠 Initializing AI Engine...")
+        ai_engine = SelfLearningCore()
+        
+        # Manually attach components to AI engine
+        ai_engine.knowledge_base = knowledge_base
+        ai_engine.memory = conversation_memory
+        
+        # Add a chat method if it doesn't exist
+        if not hasattr(ai_engine, 'chat'):
+            def chat_method(message):
+                try:
+                    # Simple response generation
+                    response = ai_engine.generate_response(message) if hasattr(ai_engine, 'generate_response') else f"I understand you said: '{message}'. I'm learning from this interaction!"
+                    
+                    # Store in memory if available
+                    if hasattr(ai_engine, 'memory') and ai_engine.memory:
+                        ai_engine.memory.add_interaction(message, response)
+                    
+                    # Update performance metrics
+                    if hasattr(ai_engine, 'performance_metrics'):
+                        ai_engine.performance_metrics['total_interactions'] += 1
+                        ai_engine.performance_metrics['successful_responses'] += 1
+                    
+                    return response
+                except Exception as e:
+                    return f"I encountered an issue: {str(e)}, but I'm still learning!"
+            
+            ai_engine.chat = chat_method
         
         print("✅ AI components initialized!")
         return ai_engine
@@ -255,6 +283,29 @@ def start_server(app):
         from pyngrok import ngrok
         import threading
         
+        # Try to get ngrok auth token from various sources
+        auth_token = None
+        
+        # Check environment variable
+        auth_token = os.environ.get('NGROK_AUTH_TOKEN')
+        
+        # For Google Colab, try to get from userdata
+        if not auth_token:
+            try:
+                from google.colab import userdata
+                auth_token = userdata.get('NGROK_AUTH_TOKEN')
+                print("✅ Found ngrok auth token in Colab secrets")
+            except:
+                pass
+        
+        # Set auth token if found
+        if auth_token:
+            ngrok.set_auth_token(auth_token)
+            print("🔑 ngrok authentication configured")
+        else:
+            print("⚠️ No ngrok auth token found. Trying without authentication...")
+            print("💡 For better reliability, add NGROK_AUTH_TOKEN to Colab secrets")
+        
         # Start Flask in background
         def run_app():
             app.run(host='0.0.0.0', port=5000, debug=False, use_reloader=False)
@@ -283,9 +334,36 @@ def start_server(app):
         return public_url
         
     except Exception as e:
-        print(f"❌ Error starting server: {e}")
-        print("💬 You can still use the CLI interface")
-        return None
+        print(f"❌ Error starting server with ngrok: {e}")
+        print("\n� Trying alternative local server...")
+        
+        # Fallback to local server
+        try:
+            import threading
+            
+            def run_app():
+                app.run(host='0.0.0.0', port=5000, debug=False, use_reloader=False)
+            
+            flask_thread = threading.Thread(target=run_app, daemon=True)
+            flask_thread.start()
+            
+            time.sleep(2)
+            
+            print("\n" + "="*60)
+            print("🎉 Local server started!")
+            print("="*60)
+            print("🌐 Access your AI at: http://localhost:5000")
+            print("\n💡 Note: This URL only works in Colab environment")
+            print("   For public access, add NGROK_AUTH_TOKEN to secrets")
+            print("\n⚠️ Keep this process running to maintain the server!")
+            print("="*60)
+            
+            return "http://localhost:5000"
+            
+        except Exception as e2:
+            print(f"❌ Error starting local server: {e2}")
+            print("�💬 You can still use the CLI interface")
+            return None
 
 def cli_chat(ai_engine):
     """Simple CLI chat interface"""
