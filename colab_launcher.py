@@ -303,8 +303,26 @@ def start_server(app):
             ngrok.set_auth_token(auth_token)
             print("🔑 ngrok authentication configured")
         else:
-            print("⚠️ No ngrok auth token found. Trying without authentication...")
-            print("💡 For better reliability, add NGROK_AUTH_TOKEN to Colab secrets")
+            print("\n" + "="*60)
+            print("❌ NGROK AUTHENTICATION REQUIRED")
+            print("="*60)
+            print("🔒 ngrok now requires a free account and auth token")
+            print("\n📋 Quick Setup (takes 2 minutes):")
+            print("   1. Go to: https://ngrok.com/")
+            print("   2. Sign up for FREE account")
+            print("   3. Copy your auth token")
+            print("   4. In Colab: Click 🔑 'Secrets' tab")
+            print("   5. Add: Name='NGROK_AUTH_TOKEN', Value=your_token")
+            print("   6. Restart this cell")
+            print("\n🌐 Skipping ngrok, using local server instead...")
+            print("="*60)
+            
+            # Start Flask server without ngrok
+            print("\n🎉 Local AI Agent is running!")
+            print("🌐 Access your AI at: http://localhost:5000")
+            print("\n💡 Local access works great in Colab!")
+            print("⚠️ Keep this process running to maintain the server!")
+            return "http://localhost:5000"
         
         # Start Flask in background
         def run_app():
